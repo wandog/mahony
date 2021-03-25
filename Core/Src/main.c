@@ -535,7 +535,7 @@ void adxl_read(uint8_t address){
 }
 
 void adxl_init(void){
-	adxl_write(0x31,0x01); //DATA_FORMAT=> +-4g
+	adxl_write(0x31,0x00); //DATA_FORMAT=> +-2g
 	adxl_write(0x2d,0x00); //POWER_CTL => Wakeup Bits
 	adxl_write(0x2c,0x0A); //100hz
 	adxl_write(0x2d,0x08); //POWER_CTL => Measure Bit
@@ -562,9 +562,13 @@ void getData_from_ADXL(int id){
 	y=(data_rec[3]<<8)|data_rec[2];
 	z=(data_rec[5]<<8)|data_rec[4];
 
-	xg = x*0.0078;
-	yg = y*0.0078;
-	zg = z*0.0078;
+	Ax=x;
+	Ay=y;
+	Az=z;
+
+//	xg = x*0.0078;
+//	yg = y*0.0078;
+//	zg = z*0.0078;
 //	memset(buffer, '\0', 100);
 //	sprintf(buffer,"%d,%d,%d,%d\n\r",id,x,y,z);
 //	while(HAL_UART_GetState(&huart2)!=HAL_UART_STATE_READY);
@@ -572,12 +576,12 @@ void getData_from_ADXL(int id){
 //		Error_Handler();
 //	}
 
-	memset(buffer, '\0', 100);
-	sprintf(buffer,"%d,%7.2f,%7.2f,%7.2f\n\r",id,xg,yg,zg);
-	while(HAL_UART_GetState(&huart2)!=HAL_UART_STATE_READY);
-	if(HAL_UART_Transmit(&huart2,(uint8_t*)buffer,sizeof(buffer),100)!=HAL_OK){
-		Error_Handler();
-	}
+//	memset(buffer, '\0', 100);
+//	sprintf(buffer,"%d,%7.2f,%7.2f,%7.2f\n\r",id,xg,yg,zg);
+//	while(HAL_UART_GetState(&huart2)!=HAL_UART_STATE_READY);
+//	if(HAL_UART_Transmit(&huart2,(uint8_t*)buffer,sizeof(buffer),100)!=HAL_OK){
+//		Error_Handler();
+//	}
 }
 /* USER CODE END 0 */
 
@@ -636,19 +640,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	float ahrs[]={0,0,0};
 	int m=0;
-	unsigned char buffer[30]="\0";
-	while(1){
-		getData_from_ADXL(100);
-		HAL_Delay(1000);
-	}
+//	unsigned char buffer[30]="\0";
+//	while(1){
+//
+//		HAL_Delay(1000);
+//	}
 
 	while (1)
 	{
 
 		Clock_Start();
-		MPU9250_Read_Accel();
+//		MPU9250_Read_Accel();
 		MPU9250_Read_Gyro();
 		MPU9250_Read_Mag();
+		getData_from_ADXL(100);
 
 		MahonyAHRSupdate(Gx, Gy, Gz, Ax, Ay, Az, My, Mx, Mz);
 
@@ -668,11 +673,12 @@ int main(void)
 	 	 // get acce
 	 	 	acce[0]=Ax-base[0];	acce[1]=Ay-base[1];	acce[2]=Az-base[2];*/
 		char mes[86];
-	 		//sprintf(mes,"%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f\n" ,Ax, Ay, Az,q0,q1,q2,q3);
+		//below is for linear acc caculation
+//		sprintf(mes,"%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f\n" ,Ax, Ay, Az,q0,q1,q2,q3);
 
 		//marked for temp
-//		sprintf(mes,"%7.2f,%7.2f,%7.2f\n",ahrs[0],ahrs[1],ahrs[2]);
-//		HAL_UART_Transmit(&huart2, (uint8_t *)mes, strlen(mes), HAL_MAX_DELAY);
+		sprintf(mes,"%7.2f,%7.2f,%7.2f\n",ahrs[0],ahrs[1],ahrs[2]);
+		HAL_UART_Transmit(&huart2, (uint8_t *)mes, strlen(mes), HAL_MAX_DELAY);
 
 		//below is for 345 ic
 
