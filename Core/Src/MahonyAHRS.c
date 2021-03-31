@@ -20,9 +20,9 @@
 //---------------------------------------------------------------------------------------------------
 // Definitions
 
-//#define sampleFreq	100.0f			// sample frequency in Hz
-#define sampleFreq	20.0f			// sample frequency in Hz
-#define twoKpDef	(6.0f * 0.5f)	// 2 * proportional gain
+#define sampleFreq	100.0f			// sample frequency in Hz
+//#define sampleFreq	20.0f			// sample frequency in Hz
+#define twoKpDef	(8.0f * 0.5f)	// 2 * proportional gain
 #define twoKiDef	(2.0f * 0.0f)	// 2 * integral gain
 #define twoKdDef	(2.0f * 0.0f)	// 2 * derivitive gain
 

@@ -135,7 +135,7 @@ double prior[3];
 double roll,pitch;
 double rad2deg = 180/3.1415;
 float mRes = 10.*4912./32760.0; // Proper scale to return milliGauss
-float dt=0.05;
+float dt=0.01;
 double base[3]={0,0,0};
 double acce[3];
 
@@ -663,9 +663,11 @@ int main(void)
 	 	ahrs[0]=atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2) * rad2deg;
 	 	ahrs[1]=asinf(-2.0f * (q1*q3 - q0*q2)) * rad2deg;
 	 	ahrs[2]=atan2f(q1*q2 + q0*q3, 0.5f - q2*q2 - q3*q3)* rad2deg;
-	 	float halfvx = q1 * q3 - q0 * q2;
-	 	float halfvy = q0 * q1 + q2 * q3;
-	 	float halfvz = q0 * q0 - 0.5f + q3 * q3;
+
+
+//	 	float halfvx = q1 * q3 - q0 * q2;
+//	 	float halfvy = q0 * q1 + q2 * q3;
+//	 	float halfvz = q0 * q0 - 0.5f + q3 * q3;
 	 	 /*//get baseline
 	 	 	base[0]=-1*sin(angle[1]/rad2deg)*sqrt(Ax*Ax+Ay*Ay+Az*Az);
 	 	 	base[1]=cos(angle[1]/rad2deg)*sin(angle[0]/rad2deg)*sqrt(Ax*Ax+Ay*Ay+Az*Az);
@@ -674,10 +676,10 @@ int main(void)
 	 	 	acce[0]=Ax-base[0];	acce[1]=Ay-base[1];	acce[2]=Az-base[2];*/
 		char mes[86];
 		//below is for linear acc caculation
-//		sprintf(mes,"%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f\n" ,Ax, Ay, Az,q0,q1,q2,q3);
+		sprintf(mes,"%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f,%6.3f\n\r" ,Ax, Ay, Az,q0 ,q1 ,q2 ,q3 );
 
 		//marked for temp
-		sprintf(mes,"%7.2f,%7.2f,%7.2f\n",ahrs[0],ahrs[1],ahrs[2]);
+//		sprintf(mes,"%7.2f,%7.2f,%7.2f\n",ahrs[0],ahrs[1],ahrs[2]);
 		HAL_UART_Transmit(&huart2, (uint8_t *)mes, strlen(mes), HAL_MAX_DELAY);
 
 		//below is for 345 ic
@@ -885,7 +887,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
 	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 9600;
+	huart2.Init.BaudRate = 115200;
 	huart2.Init.WordLength = UART_WORDLENGTH_8B;
 	huart2.Init.StopBits = UART_STOPBITS_1;
 	huart2.Init.Parity = UART_PARITY_NONE;
